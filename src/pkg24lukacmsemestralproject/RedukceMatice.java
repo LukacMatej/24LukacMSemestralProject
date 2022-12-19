@@ -140,16 +140,17 @@ public class RedukceMatice {
             boolean pInk = true;
             for (int j = 0; j < b.length; j++) {
                 for (int k = 0; k < b[j].length; k++) {
+                    if (p == a.length - 1 && q == a.length - 1) {
+                        break;
+                    }
                     if (j == result.getRow() && pInk) {
                         p++;
                         pInk = false;
                     }
-                    if (k == result.getRow()) {
+                    if (k == result.getColumn()) {
                         q++;
                     }
-                    if (p == b.length - 1 && q == b.length - 1) {
-                        break;
-                    }
+                    
                     b[j][k] = a[p][q];
                     q++;
                 }
