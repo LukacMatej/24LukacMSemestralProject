@@ -22,21 +22,21 @@ public class RedukceMatice {
             if (choice == 1) {
                 System.out.println("Zadejte rozměr čtvercové matice");
                 rozmer = sc.nextInt();
-                if (rozmer == 0){
+                if (rozmer <= 0){
                     System.out.println("Zadali jste špatný vstup");
                 }
-                while (rozmer > 0) {
-                    System.out.println("Zadejte čísla do matice");
-                    int[][] a = nacti(rozmer);
-                    canReduce = canReduce(a);
-                    int[][] b = reduce(a, canReduce);
-                    while (canReduce(b).reduce) {
+                    while (rozmer > 0) {
+                        System.out.println("Zadejte čísla do matice");
+                        int[][] a = nacti(rozmer);
+                        canReduce = canReduce(a);
+                        int[][] b = reduce(a, canReduce);
+                        while (canReduce(b).reduce) {
                         b = reduce(b, canReduce);
-                    }
-                    System.out.println("Redukovana matice (" + b.length + " x " + b.length + ")");
-                    print(b);
-                    System.out.println("Zadejte další rozměr matice nebo 0 a menší pro ukončení");
-                    rozmer = sc.nextInt();
+                        }
+                        System.out.println("Redukovana matice (" + b.length + " x " + b.length + ")");
+                        print(b);
+                        System.out.println("Zadejte další rozměr matice nebo 0 a menší pro ukončení");
+                        rozmer = sc.nextInt();
                 }
             }
             else if (choice == 2){
@@ -154,7 +154,6 @@ public class RedukceMatice {
                     b[j][k] = a[p][q];
                     q++;
                 }
-
                 q = 0;
                 p++;
             }
