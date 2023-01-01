@@ -15,7 +15,6 @@ public class RedukceMatice {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args) {
         int rozmer, choice;
-        rcb canReduce;
         menu();
         choice = sc.nextInt();
         while (choice > 0) {
@@ -28,10 +27,9 @@ public class RedukceMatice {
                     while (rozmer > 0) {
                         System.out.println("Zadejte čísla do matice");
                         int[][] a = nacti(rozmer);
-                        canReduce = canReduce(a);
-                        int[][] b = reduce(a, canReduce);
+                        int[][] b = reduce(a, canReduce(a));
                         while (canReduce(b).reduce) {
-                        b = reduce(b, canReduce);
+                        b = reduce(b, canReduce(b));
                         }
                         System.out.println("Redukovana matice (" + b.length + " x " + b.length + ")");
                         print(b);
@@ -91,35 +89,40 @@ public class RedukceMatice {
      */
     public static rcb canReduce(int[][] a) {
         boolean delRadek = false, delSloupec = false;
-        int temp;
+        int count=0;
         int r = 0, s = 0;
         for (int i = 0; i < a.length; i++) {
             for (int j = 0; j < a[i].length; j++) {//goes through whole matrix looking for just 1 non-zero number in row and column
                 if (a[i][j] != 0) {
-                    temp = a[i][j];
-                    for (int k = 0; k < a.length; k++) {// checks row for numbers that doesnt match
-                        if (a[i][k] != 0 && a[i][k] != temp) {
-                            break;
+                    for (int k = 0; k < a.length; k++) {// checks row for only one non-zero number
+                        if (a[i][k] != 0 ) {
+                            count++;
                         }
+                        if (count > 1)
+                            break;
                         if (k == a.length - 1) {
                             r = i;
                             delRadek = true;
                         }
                     }
-                    for (int k = 0; k < a.length; k++) {//checks column for numbers that doesnt match
-                        if (a[k][j] != 0 && a[k][j] != temp) {
-                            break;
+                    count = 0;
+                    for (int k = 0; k < a.length; k++) {//checks column for only one non-zero number
+                        if (a[k][j] != 0 ) {
+                            count++;
                         }
+                        if (count > 1)
+                            break;
                         if (k == a.length - 1) {
                             s = j;
                             delSloupec = true;
                         }
                     }
+                    count=0;
                 }
             }
         }
         if (delSloupec && delRadek) {
-            return new rcb(r, s, true);
+            return new rcb(r,s,true);
         }
         return new rcb(r, s, false);
     }
@@ -136,26 +139,22 @@ public class RedukceMatice {
         int rozmer = a.length;
         int[][] b = new int[rozmer - 1][rozmer - 1];
         if (result.getReduce()) {
-            int p = 0, q = 0;
-            boolean pInk = true;
-            for (int j = 0; j < b.length; j++) {
-                for (int k = 0; k < b[j].length; k++) {
-                    if (p == a.length - 1 && q == a.length - 1) {
-                        break;
-                    }
-                    if (j == result.getRow() && pInk) {
-                        p++;
-                        pInk = false;
-                    }
-                    if (k == result.getColumn()) {
-                        q++;
-                    }
-                    
-                    b[j][k] = a[p][q];
-                    q++;
+            int x = 0;
+            for (int j = 0; j < a.length; j++) {
+                if (j == result.getRow()) {
+                    x = 1;
                 }
-                q = 0;
-                p++;
+                else{
+                    int y = 0;
+                    for (int k = 0; k < a[j].length; k++) {
+                        if (k == result.getColumn()) {
+                            y=1;
+                        }
+                        else{
+                            b[j-x][k-y] = a[j][k];
+                        }
+                    }
+                }
             }
         } else {
             return a;
@@ -171,7 +170,7 @@ public class RedukceMatice {
     public static void print(int[][] a) {
         for (int i = 0; i < a.length; i++) {
             for (int j = 0; j < a[i].length; j++) {
-                System.out.print(a[i][j] + " ");
+                System.out.format("%-6d",a[i][j]);
             }
             System.out.println("");
 
@@ -183,16 +182,16 @@ public class RedukceMatice {
      */
     public static class rcb {
 
-        private final int row;
-        private final int column;
-        private final boolean reduce;
+        public int row;
+        public int column;
+        public boolean reduce;
 
         public rcb(int row, int column, boolean reduce) {
             this.row = row;
             this.column = column;
             this.reduce = reduce;
         }
-
+        
         public int getRow() {
             return row;
         }
